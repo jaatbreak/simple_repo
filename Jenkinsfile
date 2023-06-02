@@ -34,7 +34,7 @@ pipeline{
             }
             steps{
                     
-                    build propagate: false, job: 'job-2'
+                    build quietPeriod: 30, job: 'job-2'
 		    sh 'sudo docker push amansingh12/insta_pipeline:$BUILD_TAG'                                                                               
             }
         }
