@@ -33,10 +33,9 @@ pipeline{
                 label "dev"
             }
             steps{
-                withCredentials([string(credentialsId: 'docker_hub_passwd', variable: 'docker_hub_password_var')]){
-                    sh 'sudo docker login -u amansingh12 -p ${docker_hub_password_var}'
-				    sh 'sudo docker push amansingh12/insta_pipeline:$BUILD_TAG'
-                }
+                    
+                    build propagate: false, job: 'job-2'
+		    sh 'sudo docker push amansingh12/insta_pipeline:$BUILD_TAG'                                                                               
             }
         }
         stage("Testing the Docker Container"){
