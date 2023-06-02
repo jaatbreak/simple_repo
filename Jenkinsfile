@@ -1,53 +1,31 @@
-pipeline{
-    agent any 
-    stages{
-        stage("scm"){
-            agent{
-                label "dev"
-            }
-            steps{
-                git 'https://github.com/jaatbreak/simple_repo.git'
-            }
-        }
-        stage("installing the docker in a node"){
-            agent{
-                label "dev"
-            }
-            steps{
-                build quietPeriod: 30, job: 'job-1'
-            }
-                
-            
-        }
-        stage("Building the image of docker web"){
-            agent{
-                label "dev"
-            }
-            steps{
-                sh "sudo docker build -t insta_web:$BUILD_TAG ."
-                sh 'sudo docker tag insta_web:$BUILD_TAG amansingh12/insta_pipeline:$BUILD_TAG'
-            }
-        }
-        stage("DockerHub Pushing the Image"){
-            agent{
-                label "dev"
-            }
-            steps{
-                  withCredentials([string(credentialsId: 'docker_hub_passwd', variable: 'docker_hub_password_var')]){
-		  sh 'sudo docker login -u amansingh12 -p $docker_hub_password_var'
-		  sh 'sudo docker push amansingh12/insta_pipeline:$BUILD_TAG'
 
-		  }                                                                              
-            }
+pipeline{
+    stages{
+        agent{
+            label "dev"
         }
-        stage("Testing the Docker Container"){
-            agent{
-                label "dev"
-            }
+        stage("pull the code from scm"){
             steps{
-                sh 'sudo docker rm -f $(sudo docker ps -a -q)'
-				sh 'sudo docker run -dit -p 80:80  amansingh12/insta_pipeline:$BUILD_TAG'
+               git branch: 'master', url: 'https://github.com/jaatbreak/simple_repo.git'
             }
         }
-    }
+        stage("buildings the code"){
+            steps{
+            sh 'sudo docker build -t insta_app:$BUILD_TAG .'
+			sh 'sudo docker tag insta_app:$BUILD_TAG amansingh12/insta_app:$BUILD_TAG'
+            }
+        }
+        stage("push the image to docker"){
+            steps{
+                withCredentials([string(credentialsId: 'docker_hub', variable: 'docker_var')]){
+                    sh 'sudo docker login -u amansingh12 -p $docker_var'
+					sh 'sudo docker push amansingh12/insta_app:$BUILD_TAG'
+                }
+            }
+        }
+        stage("QAT team work"){
+            steps{
+                sh 'sudo docker run -dit -p 80:80 amansingh12/insta_app:$BUILD_TAG'
+            }
+        }
 }
