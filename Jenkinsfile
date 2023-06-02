@@ -6,13 +6,21 @@ pipeline{
         }
         stage("scm"){
             steps{
-                git branch: 'master', url: 'https://github.com/jaatbreak/simple_repo.git'
+                
+pipeline{
+    stages{
+        agent{
+            label "dev"
+        }
+        stage("scm"){
+            steps{
+                git 'https://github.com/jaatbreak/simple_repo.git'
             }
         }
         stage("Build"){
             steps{
-            sh 'sudo docker build -t insta_app:$BUILD_TAG .'
-			sh 'sudo docker tag insta_app:$BUILD_TAG amansingh12/insta_app:$BUILD_TAG'
+                sh 'sudo docker build -t insta_app:$BUILD_TAG .'
+		sh 'sudo docker tag insta_app:$BUILD_TAG amansingh12/insta_app:$BUILD_TAG'
             }
         }
         stage("push "){
