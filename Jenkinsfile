@@ -1,9 +1,9 @@
                 
 pipeline{
-    stages{
         agent{
             label "dev"
-        }
+       }
+         stages{
         stage("scm"){
             steps{
                 git branch: 'master', url: 'https://github.com/jaatbreak/simple_repo.git'
