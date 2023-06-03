@@ -14,4 +14,4 @@ In this project we are using devops tools:-
 - AWS server
 - git and git-git-hub
 - docker
-- kubrnetes 
+- kubernetes 
