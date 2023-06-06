@@ -36,6 +36,14 @@ pipeline{
                 sh'echo "------------------Ready For Production----------------------------------"'
             }
         }
+        stage("Permission To Run Web in Production"){
+		steps{
+		    script{
+			 Boolean userInput = input(id: 'Proceed1', message: 'Do You want Run Web in Production Environment?', parameters: [[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you agree with this']])
+                				echo 'userInput: ' + userInput      
+	     }	
+	   }
+        }	 
         stage("Build The Kubernetes Containers For Production"){
             agent{
                 label "deploy"
